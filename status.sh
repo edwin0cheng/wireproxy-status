@@ -6,6 +6,12 @@ function write_connection() {
 	echo "$conn" > "$file"
 }
 
+# If first argument is "write", write the connection status to a file.
+if [[ "$1" == "write" ]]; then
+	write_connection
+	exit 0
+fi
+
 function read_connection() {
 	local file="/tmp/wireproxy-connection"
 	if [[ -f "$file" ]]; then
@@ -24,7 +30,8 @@ if [[ -z "$config" ]]; then
 else
 	# Test the connection:
 	conn=$(read_connection)
-	write_connection &
+	# write the connection using this script
+	setsid --fork ${0} write
 
 	loc=${config##*-}
 	
